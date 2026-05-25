@@ -5,6 +5,7 @@ import '../widgets/gradient_background.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/firebase_setup_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -46,12 +47,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Pop all views until we reach home (which switches to HomeScreen automatically due to auth listener!)
       Navigator.popUntil(context, (route) => route.isFirst);
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(auth.errorMessage ?? 'Registration failed.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (auth.needsFirebaseSetup) {
+        showFirebaseSetupDialog(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(auth.errorMessage ?? 'Registration failed.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 

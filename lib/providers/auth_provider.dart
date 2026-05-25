@@ -6,11 +6,12 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService.instance;
+  AuthService get _authService => AuthService.instance;
 
   UserModel? _user;
   bool _isLoading = false;
   String? _errorMessage;
+  bool _needsFirebaseSetup = false;
   StreamSubscription<UserModel?>? _authSubscription;
 
   AuthProvider() {
@@ -21,6 +22,16 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _user != null;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  bool get needsFirebaseSetup => _needsFirebaseSetup;
+
+  void enableMockMode() {
+    isMockMode = true;
+    _needsFirebaseSetup = false;
+    _errorMessage = null;
+    _authSubscription?.cancel();
+    _init();
+    notifyListeners();
+  }
 
   void _init() {
     _isLoading = true;
@@ -161,8 +172,9 @@ class AuthProvider extends ChangeNotifier {
       _errorMessage = 'Password must be at least 6 characters.';
     } else if (msg.contains('operation-not-allowed')) {
       _errorMessage = 'Email/Password sign-in is disabled in Firebase. Please enable it in Firebase Console > Build > Authentication > Sign-in method.';
-    } else if (msg.contains('api-key-not-valid')) {
-      _errorMessage = 'Your Firebase API Key is invalid. Please check your firebase_options.dart configuration.';
+    } else if (msg.contains('api-key-not-valid') || msg.toLowerCase().contains('api key not valid')) {
+      _needsFirebaseSetup = true;
+      _errorMessage = 'Firebase API Key is invalid or restricted for this Android package.';
     } else {
       final clean = msg.replaceAll(RegExp(r'\[.*\]'), '').trim();
       _errorMessage = clean.isEmpty || clean == 'Error' ? msg : clean;
@@ -172,6 +184,7 @@ class AuthProvider extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
+    _needsFirebaseSetup = false;
     notifyListeners();
   }
 

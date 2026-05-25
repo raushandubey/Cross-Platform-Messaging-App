@@ -8,6 +8,7 @@ import '../providers/chat_provider.dart';
 import '../widgets/navigation_rail.dart';
 import '../widgets/chat_tile.dart';
 import '../widgets/chat_bubble.dart';
+import '../widgets/ad_banner_widget.dart';
 import 'chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -594,6 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                   ),
+                  const AdBannerWidget(),
                 ],
               ),
             ),
@@ -712,6 +714,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                   ),
+                  const AdBannerWidget(),
                 ],
               ),
             ),
@@ -876,10 +879,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               color: AppColors.sidebarList,
               padding: const EdgeInsets.only(top: 24),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Settings',
@@ -891,8 +894,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 24),
-                  ListTile(
+                  const SizedBox(height: 24),
+                  const ListTile(
                     leading: Icon(
                       Icons.notifications_active_outlined,
                       color: AppColors.accentBlue,
@@ -905,7 +908,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  ListTile(
+                  const ListTile(
                     leading: Icon(
                       Icons.lock_outline_rounded,
                       color: AppColors.accentBlue,
@@ -918,7 +921,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  ListTile(
+                  const ListTile(
                     leading: Icon(
                       Icons.palette_outlined,
                       color: AppColors.accentBlue,
@@ -931,7 +934,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  ListTile(
+                  const ListTile(
                     leading: Icon(
                       Icons.help_outline_rounded,
                       color: AppColors.accentBlue,
@@ -944,6 +947,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  const Spacer(),
+                  const AdBannerWidget(),
                 ],
               ),
             ),
@@ -1469,12 +1474,19 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           // Main dynamic pane based on bottom nav
-          body: _buildMobileTabBody(
-            chatProvider,
-            currentUserId,
-            filteredChats,
-            filteredUsers,
-            authProvider,
+          body: Column(
+            children: [
+              Expanded(
+                child: _buildMobileTabBody(
+                  chatProvider,
+                  currentUserId,
+                  filteredChats,
+                  filteredUsers,
+                  authProvider,
+                ),
+              ),
+              const AdBannerWidget(),
+            ],
           ),
 
           // Platform Adaptive Bottom Navigation bar

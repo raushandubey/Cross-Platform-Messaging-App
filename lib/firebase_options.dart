@@ -19,8 +19,16 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        if (android.apiKey == 'YOUR_ANDROID_API_KEY') {
+          // Fallback to web config to allow immediate database connection for release/debug testing
+          return web;
+        }
         return android;
       case TargetPlatform.iOS:
+        if (ios.apiKey == 'YOUR_IOS_API_KEY') {
+          // Fallback to web config to allow immediate database connection for release/debug testing
+          return web;
+        }
         return ios;
       default:
         throw UnsupportedError(
@@ -39,9 +47,9 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_ANDROID_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyAn1cgqR6cr2IKsloAxL7Tle7aS1alhZcE',
+    appId: '1:881154618630:android:f4bdf8e8f671fe47269a87',
+    messagingSenderId: '881154618630', // Project default
     projectId: 'message-23b1d',
     storageBucket: 'message-23b1d.firebasestorage.app',
   );

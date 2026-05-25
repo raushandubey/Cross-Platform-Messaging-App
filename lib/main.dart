@@ -10,6 +10,7 @@ import 'providers/chat_provider.dart';
 import 'services/auth_service.dart';
 import 'services/database_service.dart';
 import 'services/notification_service.dart';
+import 'services/ad_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 
@@ -37,6 +38,13 @@ void main() async {
     await NotificationService.instance.initialize();
   } catch (e) {
     debugPrint('⚠️ Notification initialization failed: $e');
+  }
+
+  // Initialize AdMob Service
+  try {
+    await AdService.instance.initialize();
+  } catch (e) {
+    debugPrint('⚠️ AdMob initialization failed: $e');
   }
 
   runApp(

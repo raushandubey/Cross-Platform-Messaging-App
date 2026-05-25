@@ -5,6 +5,7 @@ import '../widgets/gradient_background.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/firebase_setup_dialog.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,12 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (!success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(auth.errorMessage ?? 'Sign in failed.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (auth.needsFirebaseSetup) {
+        showFirebaseSetupDialog(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(auth.errorMessage ?? 'Sign in failed.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 
@@ -57,12 +62,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (!success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(auth.errorMessage ?? 'Social sign in failed.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (auth.needsFirebaseSetup) {
+        showFirebaseSetupDialog(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(auth.errorMessage ?? 'Social sign in failed.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 
