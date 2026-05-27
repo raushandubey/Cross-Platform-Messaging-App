@@ -37,14 +37,8 @@ workflows:
       - name: Build iOS Simulator
         script: flutter build ios --simulator --debug
 
-      # ── Step 7: Zip the Simulator App for Appetize.io ────────────────────────
-      - name: Zip for Appetize.io
-        script: |
-          cd build/ios/iphonesimulator
-          zip -y -r Runner.zip Runner.app
-
     artifacts:
-      - build/ios/iphonesimulator/Runner.zip
+      - build/ios/iphonesimulator/Runner.app
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
