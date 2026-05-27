@@ -41,7 +41,7 @@ workflows:
       - name: Zip for Appetize.io
         script: |
           cd build/ios/iphonesimulator
-          zip -r Runner.zip Runner.app
+          zip -y -r Runner.zip Runner.app
 
     artifacts:
       - build/ios/iphonesimulator/Runner.zip
