@@ -1,4 +1,60 @@
 workflows:
+  ios-simulator:
+    name: iOS Simulator Build (Appetize.io)
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      # ── Step 1: Disable Swift Package Manager BEFORE flutter pub get ─────────
+      - name: Disable Swift Package Manager
+        script: flutter config --no-enable-swift-package-manager
+
+      # ── Step 2: Fetch Dart/Flutter dependencies ──────────────────────────────
+      - name: Get Flutter packages
+        script: flutter pub get
+
+      # ── Step 3: Clean stale CocoaPods cache ──────────────────────────────────
+      - name: Clean CocoaPods cache
+        script: |
+          cd ios
+          rm -rf Pods
+          rm -f Podfile.lock
+
+      # ── Step 4: Update CocoaPods repository index ────────────────────────────
+      - name: Update CocoaPods repo
+        script: pod repo update
+
+      # ── Step 5: Install CocoaPods dependencies ───────────────────────────────
+      - name: Install pods
+        script: |
+          cd ios
+          pod install
+
+      # ── Step 6: Build the iOS Simulator App ──────────────────────────────────
+      - name: Build iOS Simulator
+        script: flutter build ios --simulator --debug
+
+      # ── Step 7: Zip the Simulator App for Appetize.io ────────────────────────
+      - name: Zip for Appetize.io
+        script: |
+          cd build/ios/iphonesimulator
+          zip -r Runner.zip Runner.app
+
+    artifacts:
+      - build/ios/iphonesimulator/Runner.zip
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      email:
+        recipients:
+          - raushandubey2005@gmail.com
+        notify:
+          success: true
+          failure: true
+
   ios-release:
     name: iOS Build
     max_build_duration: 60
@@ -9,9 +65,6 @@ workflows:
 
     scripts:
       # ── Step 1: Disable Swift Package Manager BEFORE flutter pub get ─────────
-      # google_mobile_ads uses CocoaPods only. SPM is enabled by default in
-      # Flutter stable and conflicts with it. We disable it here so that
-      # flutter pub get does NOT re-enable SPM in the workspace settings.
       - name: Disable Swift Package Manager
         script: flutter config --no-enable-swift-package-manager
 
@@ -20,9 +73,6 @@ workflows:
         script: flutter pub get
 
       # ── Step 3: Clean stale CocoaPods cache that may cause "spec not found" ──
-      # Codemagic caches the Pods folder between builds. When dependencies
-      # change (e.g. deployment target, Firebase version), the stale cache
-      # causes CocoaPods to fail. We always start fresh here.
       - name: Clean CocoaPods cache
         script: |
           cd ios
@@ -30,9 +80,6 @@ workflows:
           rm -f Podfile.lock
 
       # ── Step 4: Update CocoaPods repository index ────────────────────────────
-      # The CI machine's local spec repo can be outdated, causing it to fail
-      # to find pods like Google-Mobile-Ads-SDK 12.14.0 or nanopb.
-      # This MUST run before pod install, not inside the Podfile.
       - name: Update CocoaPods repo
         script: pod repo update
 
