@@ -1,0 +1,45 @@
+workflows:
+  ios-release:
+    name: iOS Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      # ── Step 1: Disable Swift Package Manager BEFORE anything else ──────────
+      # This is required because google_mobile_ads uses CocoaPods only.
+      # SPM (enabled by default in Flutter stable) conflicts with it.
+      # Running this here ensures Flutter does NOT re-enable SPM during pub get.
+      - name: Disable Swift Package Manager
+        script: flutter config --no-enable-swift-package-manager
+
+      # ── Step 2: Fetch Dart/Flutter dependencies ──────────────────────────────
+      - name: Get Flutter packages
+        script: flutter pub get
+
+      # ── Step 3: Install CocoaPods dependencies ───────────────────────────────
+      - name: Install pods
+        script: |
+          cd ios
+          pod repo update
+          pod install
+        working_directory: $CM_BUILD_DIR
+
+      # ── Step 4: Build the iOS app ─────────────────────────────────────────────
+      - name: Build iOS
+        script: |
+          flutter build ios --release --no-codesign
+
+    artifacts:
+      - build/ios/iphoneos/Runner.app
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      email:
+        recipients:
+          - raushandubey2005@gmail.com
+        notify:
+          success: true
+          failure: true
