@@ -88,8 +88,15 @@ workflows:
       - name: Build iOS
         script: flutter build ios --release --no-codesign
 
+      # ── Step 7: Package into Unsigned IPA (equivalent to APK) ──────────────────
+      - name: Package into IPA
+        script: |
+          mkdir -p Payload
+          mv build/ios/iphoneos/Runner.app Payload/
+          zip -y -r Runner.ipa Payload
+
     artifacts:
-      - build/ios/iphoneos/Runner.app
+      - Runner.ipa
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
