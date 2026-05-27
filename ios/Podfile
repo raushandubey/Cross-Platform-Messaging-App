@@ -1,11 +1,5 @@
 source 'https://cdn.cocoapods.org/'
 
-# Force CocoaPods to update repositories in the CI environment to resolve CDN/Trunk sync issues
-if ENV['CI']
-  puts "Codemagic/CI environment detected. Updating CocoaPods repositories..."
-  system("pod repo update")
-end
-
 # Uncomment this line to define a global platform for your project
 platform :ios, '15.0'
 
