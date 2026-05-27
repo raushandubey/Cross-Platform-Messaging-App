@@ -4,5 +4,7 @@
 <dict>
 	<key>PreviewsEnabled</key>
 	<false/>
+	<key>IDEPackageSupportUseUpstreamConfig</key>
+	<false/>
 </dict>
 </plist>
